@@ -1,0 +1,16 @@
+{
+  "name": "WeddingCam",
+  "short_name": "WeddingCam",
+  "start_url": "/WeddingCam2-0/",
+  "scope": "/WeddingCam2-0/",
+  "display": "standalone",
+  "background_color": "#FFF8E7",
+  "theme_color": "#FFF8E7",
+  "icons": [
+    {
+      "src": "https://sarah-und-albert.wordpress.com/wp-content/uploads/2025/08/cropped-hochzeitslogo_final.v1.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
