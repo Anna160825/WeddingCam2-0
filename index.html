@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>WeddingCam 📸</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="wedding_app_icon.png" />
+  <meta name="theme-color" content="#FFF8E7" />
+  <script src="https://widget.cloudinary.com/v2.0/global/all.js" defer></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #FFF8E7;
+      color: #354426;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      background-color: #F5F5DC;
+      border: none;
+      color: #354426;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background-color: #e0e0c2;
+    }
+  </style>
+</head>
+<body>
+  <h1>📸 Mach ein Bild für unser Gästebuch</h1>
+  <p>Die Kamera öffnet sich gleich automatisch. Du kannst auch ein Bild aus deiner Galerie auswählen.</p>
+
+  <script>
+  let deferredPrompt;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Gen Z Install-Button einfügen
+    const installBtn = document.createElement('button');
+    installBtn.innerText = '📲 App installieren';
+    installBtn.style.marginTop = '20px';
+    document.body.appendChild(installBtn);
+
+    installBtn.addEventListener('click', async () => {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+
+      if (outcome === 'accepted') {
+        console.log('✅ User hat die App installiert');
+      } else {
+        console.log('❌ User hat Installation abgelehnt');
+      }
+
+      deferredPrompt = null;
+      installBtn.remove();
+        }
+      }, 1500); // kleine Pause, damit es nicht gleich beim Öffnen reinplatzt
+    });
+
+    // Cloudinary Widget automatisch öffnen
+    window.addEventListener('load', () => {
+      const widget = cloudinary.createUploadWidget({
+        cloudName: 'dpajidihc',
+        uploadPreset: 'WeddingCam',
+        folder: 'gaeste',
+        sources: ['camera', 'local'],
+        multiple: false,
+        maxFileSize: 5000000,
+        cropping: false,
+        showAdvancedOptions: false
+      }, (error, result) => {
+        if (!error && result && result.event === "success") {
+          alert("✅ Bild hochgeladen!");
+          console.log("Bild-URL:", result.info.secure_url);
+        }
+      });
+      widget.open();
+    });
+  </script>
+</body>
+</html>
