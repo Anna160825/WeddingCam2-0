@@ -1,34 +1,25 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>WeddingCam 📸</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="wedding_app_icon.png" />
-  <meta name="theme-color" content="#FFF8E7" />
-  <script src="https://widget.cloudinary.com/v2.0/global/all.js" defer></script>
+  <meta charset="UTF-8">
+  <title>Foto hochladen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
   <style>
     body {
-      margin: 0;
-      background-color: #FFF8E7;
-      color: #354426;
       font-family: sans-serif;
+      background-color: #fff8e7;
       text-align: center;
       padding: 2rem;
-    }
-    h1 {
-      font-size: 2rem;
     }
     button {
       padding: 1rem 2rem;
       font-size: 1.2rem;
-      background-color: #F5F5DC;
+      background-color: #f5f5dc;
       border: none;
       color: #354426;
       border-radius: 5px;
       cursor: pointer;
-      margin-top: 1rem;
     }
     button:hover {
       background-color: #e0e0c2;
@@ -36,58 +27,30 @@
   </style>
 </head>
 <body>
-  <h1>📸 Mach ein Bild für unser Gästebuch</h1>
-  <p>Die Kamera öffnet sich gleich automatisch. Du kannst auch ein Bild aus deiner Galerie auswählen.</p>
+  <h1>📤 Lade dein Bild hoch</h1>
+  <p>Wähle ein Bild von deinem Handy oder mache ein neues 📸</p>
+  <button id="upload_widget">Bild hochladen</button>
 
   <script>
-    // Service Worker registrieren
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('✅ Service Worker registriert'))
-        .catch(err => console.error('❌ Fehler beim Registrieren des Service Workers:', err));
-    }
-
-    // PWA Installation vorbereiten
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-
-      // Kleiner Gen-Z Style Prompt
-      setTimeout(async () => {
-        const addToHome = confirm("Yo! 😎 Willst du WeddingCam fix auf deinem Startbildschirm haben?");
-        if (addToHome && deferredPrompt) {
-          deferredPrompt.prompt();
-          const result = await deferredPrompt.userChoice;
-          if (result.outcome === 'accepted') {
-            console.log('✅ App wurde installiert');
-          } else {
-            console.log('❌ User hat die Installation abgelehnt');
-          }
-          deferredPrompt = null;
-        }
-      }, 1500); // kleine Pause, damit es nicht gleich beim Öffnen reinplatzt
+    const widget = cloudinary.createUploadWidget({
+      cloudName: 'dpajidihc',
+      uploadPreset: 'WeddingCam',
+      folder: 'gaeste',
+      tags: ['gaeste'],
+      sources: ['local', 'camera'],
+      multiple: false,
+      maxFileSize: 5000000,
+      showCompletedButton: true
+    }, (error, result) => {
+      if (!error && result && result.event === "success") {
+        alert("✅ Bild erfolgreich hochgeladen!");
+        console.log("Bild-URL:", result.info.secure_url);
+      }
     });
 
-    // Cloudinary Widget automatisch öffnen
-    window.addEventListener('load', () => {
-      const widget = cloudinary.createUploadWidget({
-        cloudName: 'dpajidihc',
-        uploadPreset: 'WeddingCam',
-        folder: 'gaeste',
-        sources: ['camera', 'local'],
-        multiple: false,
-        maxFileSize: 5000000,
-        cropping: false,
-        showAdvancedOptions: false
-      }, (error, result) => {
-        if (!error && result && result.event === "success") {
-          alert("✅ Bild hochgeladen!");
-          console.log("Bild-URL:", result.info.secure_url);
-        }
-      });
+    document.getElementById("upload_widget").addEventListener("click", () => {
       widget.open();
-    });
+    }, false);
   </script>
 </body>
 </html>
