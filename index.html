@@ -2,64 +2,67 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Foto hochladen</title>
+  <title>WeddingCam Galerie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
   <style>
     body {
+      margin: 0;
+      padding: 2rem;
       font-family: sans-serif;
       background-color: #ffffff;
-      text-align: center;
-      padding: 3rem 1rem;
       color: #333;
     }
+
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-    p {
-      font-size: 1rem;
+      text-align: center;
       margin-bottom: 2rem;
+      font-size: 1.8rem;
     }
-    button {
-      padding: 1rem 2rem;
-      font-size: 1.1rem;
-      background-color: #444;
-      color: #fff;
-      border: none;
+
+    #gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      justify-items: center;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
       border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #222;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
 <body>
-  <h1>Bild für das Gästebuch hochladen</h1>
-  <p>Foto auswählen oder direkt mit der Kamera aufnehmen</p>
-  <button id="upload_widget">Bild auswählen</button>
+  <h1>WeddingCam Galerie</h1>
+  <div id="gallery">Wird geladen...</div>
 
   <script>
-    const widget = cloudinary.createUploadWidget({
-      cloudName: 'dpajidihc',
-      uploadPreset: 'WeddingCam',
-      folder: 'gaeste',
-      tags: ['gaeste'],
-      sources: ['local', 'camera'],
-      multiple: false,
-      maxFileSize: 5000000,
-      showCompletedButton: true
-    }, (error, result) => {
-      if (!error && result && result.event === "success") {
-        alert("✅ Bild wurde erfolgreich hochgeladen!");
-        console.log("Bild-URL:", result.info.secure_url);
-      }
-    });
+    const cloudName = 'dpajidihc';
+    const tag = 'gaeste';
+    const gallery = document.getElementById('gallery');
 
-    document.getElementById("upload_widget").addEventListener("click", () => {
-      widget.open();
-    }, false);
+    async function fetchImages() {
+      try {
+        const response = await fetch(`https://res.cloudinary.com/${cloudName}/image/list/${tag}.json`);
+        const data = await response.json();
+
+        gallery.innerHTML = '';
+
+        data.resources.forEach(image => {
+          const img = document.createElement('img');
+          img.src = `https://res.cloudinary.com/${cloudName}/image/upload/${image.public_id}.${image.format}`;
+          img.alt = image.public_id;
+          gallery.appendChild(img);
+        });
+      } catch (e) {
+        console.error('Fehler beim Laden der Bilder:', e);
+        gallery.textContent = 'Galerie konnte nicht geladen werden.';
+      }
+    }
+
+    fetchImages();
   </script>
 </body>
 </html>
