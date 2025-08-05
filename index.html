@@ -8,28 +8,37 @@
   <style>
     body {
       font-family: sans-serif;
-      background-color: #fff8e7;
+      background-color: #ffffff;
       text-align: center;
-      padding: 2rem;
+      padding: 3rem 1rem;
+      color: #333;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1rem;
+      margin-bottom: 2rem;
     }
     button {
       padding: 1rem 2rem;
-      font-size: 1.2rem;
-      background-color: #f5f5dc;
+      font-size: 1.1rem;
+      background-color: #444;
+      color: #fff;
       border: none;
-      color: #354426;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #e0e0c2;
+      background-color: #222;
     }
   </style>
 </head>
 <body>
-  <h1>📤 Lade dein Bild hoch</h1>
-  <p>Wähle ein Bild von deinem Handy oder mache ein neues 📸</p>
-  <button id="upload_widget">Bild hochladen</button>
+  <h1>Bild für das Gästebuch hochladen</h1>
+  <p>Foto auswählen oder direkt mit der Kamera aufnehmen</p>
+  <button id="upload_widget">Bild auswählen</button>
 
   <script>
     const widget = cloudinary.createUploadWidget({
@@ -43,7 +52,7 @@
       showCompletedButton: true
     }, (error, result) => {
       if (!error && result && result.event === "success") {
-        alert("✅ Bild erfolgreich hochgeladen!");
+        alert("✅ Bild wurde erfolgreich hochgeladen!");
         console.log("Bild-URL:", result.info.secure_url);
       }
     });
